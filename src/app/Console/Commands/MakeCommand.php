@@ -67,6 +67,7 @@ class MakeCommand extends Command
         $newVersion = [
             "version" => $this->generateVersion($this->getVersionType()),
             "releaseDate" => $this->getReleaseDate(),
+            "createdDate" => now()->format('Y/m/d'),
             "Author" => $this->getAuthors(),
             "url" => $this->getUrl(),
             "description" => $this->getDescriptions(),
