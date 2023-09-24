@@ -120,29 +120,30 @@ class MakeCommand extends Command
         return $this->ask("When will you release?", now()->format('Y/m/d'));
     }
 
-    protected function getAskArray(string $ask, mixed $default = null): array
+    protected function getAskArray(string $ask): array|null
     {
-        $answer = [];
+        $answers = [];
         $continue = true;
         do {
-            $answer[] = $this->ask($ask, $default);
+            $answer = $this->ask($ask, null);
+            if (!is_null($answer)) $answers[] = $answer;
             if (!$this->confirm("Do you have anything else?")) $continue = false;
         } while ($continue);
-        return $answer;
+        return count($answers) ? $answers : null;
     }
 
-    protected function getAuthors(): array
+    protected function getAuthors(): array|null
     {
-        return $this->getAskArray("What's author name?", "Unknown");
+        return $this->getAskArray("What's author name?");
     }
 
-    protected function getUrl(): array
+    protected function getUrl(): array|null
     {
-        return $this->getAskArray("What's links for release notes?", config("app.url"));
+        return $this->getAskArray("What's links for release notes?");
     }
 
-    protected function getDescriptions(): array
+    protected function getDescriptions(): array|null
     {
-        return $this->getAskArray("What's description of changes, etc.? ", "Nothing");
+        return $this->getAskArray("What's description of changes, etc.? ");
     }
 }
