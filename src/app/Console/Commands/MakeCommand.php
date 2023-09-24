@@ -4,7 +4,7 @@ namespace ikepu_tp\LaravelVersioning\app\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class InstallCommand extends Command
+class MakeCommand extends Command
 {
     /**
      * The name and signature of the console command.
