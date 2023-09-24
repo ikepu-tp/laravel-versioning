@@ -56,7 +56,7 @@ class MakeCommand extends Command
             "version" => $this->generateVersion($this->getVersionType()),
             "releaseDate" => $this->getReleaseDate(),
             "Author" => $this->getAuthors(),
-            "url" => "",
+            "url" => $this->getUrl(),
             "description" => "",
             "newFeatures" => "",
             "changedFeatures" => "",
@@ -120,14 +120,23 @@ class MakeCommand extends Command
         return $this->ask("When will you release?", now()->format('Y/m/d'));
     }
 
-    protected function getAuthors(): array
+    protected function getAskArray(string $ask, mixed $default = null): array
     {
-        $authors = [];
+        $answer = [];
         $continue = true;
         do {
-            $authors[] = $this->ask("What's author name?", "Unknown");
-            if (!$this->confirm("Do you have authors else?")) $continue = false;
+            $answer[] = $this->ask($ask, $default);
+            if (!$this->confirm("Do you have anything else?")) $continue = false;
         } while ($continue);
-        return $authors;
+        return $answer;
+    }
+    protected function getAuthors(): array
+    {
+        return $this->getAskArray("What's author name?", "Unknown");
+    }
+
+    protected function getUrl(): array
+    {
+        return $this->getAskArray("What's links for release notes?", config("app.url"));
     }
 }
