@@ -55,7 +55,7 @@ class MakeCommand extends Command
         $newVersion = [
             "version" => $this->generateVersion($this->getVersionType()),
             "releaseDate" => $this->getReleaseDate(),
-            "Author" => "",
+            "Author" => $this->getAuthors(),
             "url" => "",
             "description" => "",
             "newFeatures" => "",
@@ -118,5 +118,16 @@ class MakeCommand extends Command
     protected function getReleaseDate(): string
     {
         return $this->ask("When will you release?", now()->format('Y/m/d'));
+    }
+
+    protected function getAuthors(): array
+    {
+        $authors = [];
+        $continue = true;
+        do {
+            $authors[] = $this->ask("What's author name?", "Unknown");
+            if (!$this->confirm("Do you have authors else?")) $continue = false;
+        } while ($continue);
+        return $authors;
     }
 }
