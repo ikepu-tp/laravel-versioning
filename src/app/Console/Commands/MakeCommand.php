@@ -57,7 +57,7 @@ class MakeCommand extends Command
             "releaseDate" => $this->getReleaseDate(),
             "Author" => $this->getAuthors(),
             "url" => $this->getUrl(),
-            "description" => "",
+            "description" => $this->getDescriptions(),
             "newFeatures" => "",
             "changedFeatures" => "",
             "deletedFeatures" => "",
@@ -130,6 +130,7 @@ class MakeCommand extends Command
         } while ($continue);
         return $answer;
     }
+
     protected function getAuthors(): array
     {
         return $this->getAskArray("What's author name?", "Unknown");
@@ -138,5 +139,10 @@ class MakeCommand extends Command
     protected function getUrl(): array
     {
         return $this->getAskArray("What's links for release notes?", config("app.url"));
+    }
+
+    protected function getDescriptions(): array
+    {
+        return $this->getAskArray("What's description of changes, etc.? ", "Nothing");
     }
 }
