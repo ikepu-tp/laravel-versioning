@@ -54,7 +54,7 @@ class MakeCommand extends Command
     {
         $newVersion = [
             "version" => $this->generateVersion($this->getVersionType()),
-            "releaseDate" => "",
+            "releaseDate" => $this->getReleaseDate(),
             "Author" => "",
             "url" => "",
             "description" => "",
@@ -113,5 +113,10 @@ class MakeCommand extends Command
                 break;
         }
         return implode(".", $splited_prev_version);
+    }
+
+    protected function getReleaseDate(): string
+    {
+        return $this->ask("When will you release?", now()->format('Y/m/d'));
     }
 }
