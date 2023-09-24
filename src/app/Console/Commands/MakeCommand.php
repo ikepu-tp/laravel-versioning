@@ -2,9 +2,10 @@
 
 namespace ikepu_tp\LaravelVersioning\app\Console\Commands;
 
+use Error;
 use Illuminate\Console\Command;
 
-class InstallCommand extends Command
+class MakeCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -12,7 +13,7 @@ class InstallCommand extends Command
      * @var string
      */
     protected $signature = 'versioning:make
-                            {--V|version= : version type (major, minor, patch)}
+                            {--VT|version_type= : version type (major, minor, patch)}
                             {--J|major : version type is major}
                             {--M|minor : version type is minor}
                             {--P|patch : version type is patch}
@@ -25,15 +26,34 @@ class InstallCommand extends Command
      */
     protected $description = 'Generate release note.';
 
+    protected $versions;
     /**
      * Execute the console command.
      */
     public function handle()
     {
+        $versions = $this->getVersions();
+        $version = $this->generateReleaseNote();
+        dump($version);
+        if (!$this->confirm("Is this OK?", true)) return;
+        $versions[] = $version;
+        $this->saveVersions($versions);
+        $this->info("Generated release note.");
+        return;
+    }
+
+    protected function saveVersions(array $versions): void
+    {
+        file_put_contents(
+            base_path('version.json'),
+            json_encode($versions, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
+        );
     }
 
     protected function getVersions()
     {
+        if ($this->versions) return $this->versions;
+
         $path = base_path("version.json");
         if (!file_exists($path)) {
             $this->error("Could not find `version.json` file.");
@@ -41,25 +61,155 @@ class InstallCommand extends Command
         }
 
         $file = file_get_contents($path);
-        $versions = json_decode($file, true);
-        return $versions;
+        $this->versions = json_decode($file, true);
+        return $this->versions;
     }
 
     protected function generateReleaseNote()
     {
         $newVersion = [
-            "version" => "",
-            "releaseDate" => "",
-            "Author" => "",
-            "url" => "",
-            "description" => "",
-            "newFeatures" => "",
-            "changedFeatures" => "",
-            "deletedFeatures" => "",
-            "notice" => "",
-            "security" => "",
-            "futurePlans" => "",
-            "note" => "",
+            "version" => $this->generateVersion($this->getVersionType()),
+            "releaseDate" => $this->getReleaseDate(),
+            "createdDate" => now()->format('Y/m/d'),
+            "Author" => $this->getAuthors(),
+            "url" => $this->getUrl(),
+            "description" => $this->getDescriptions(),
+            "newFeatures" => $this->getNewFeatures(),
+            "changedFeatures" => $this->getChangedFeatures(),
+            "deletedFeatures" => $this->getDeletedFeatures(),
+            "notice" => $this->getNotice(),
+            "security" => $this->getSecurity(),
+            "futurePlans" => $this->getFuture(),
+            "note" => $this->getNote(),
         ];
+
+        return $newVersion;
+    }
+
+    protected function getVersionType(): string|null
+    {
+        $version_type = $this->option("version_type");
+        if ($this->option("patch")) $version_type = "patch";
+        if ($this->option("minor")) $version_type = "minor";
+        if ($this->option("major")) $version_type = "major";
+        if (is_null($version_type)) {
+            foreach (["major", "minor", "patch"] as $vt) {
+                if (!$this->confirm("Do you want to increase `{$vt}`?")) continue;
+                $version_type = $vt;
+                break;
+            }
+        }
+        return $version_type;
+    }
+
+    protected function generateVersion(string $version_type = null): string|false
+    {
+        if (!in_array($version_type, ["major", "minor", "patch"]))
+            return $this->ask("What's next version?", "0.0.0");
+        $versions = $this->getVersions();
+        $prev_version = count($versions) ? $versions[count($versions) - 1] : ["version" => "0.0.0"];
+        $splited_prev_version = explode('.', preg_replace("/[^0-9\.]/", "", $prev_version["version"]));
+        switch ($version_type) {
+            case 'major':
+                $splited_prev_version[0] = (int)$splited_prev_version[0] + 1;
+                break;
+            case 'minor':
+                if ($splited_prev_version[1]) {
+                    $splited_prev_version[1] = (int)$splited_prev_version[1] + 1;
+                } else {
+                    $splited_prev_version[1] = 1;
+                }
+                break;
+            case 'patch':
+                if ($splited_prev_version[2]) {
+                    $splited_prev_version[2] = (int)$splited_prev_version[2] + 1;
+                } else {
+                    $splited_prev_version[2] = 1;
+                }
+                break;
+        }
+        return implode(".", $splited_prev_version);
+    }
+
+    protected function getReleaseDate(): string
+    {
+        return $this->ask("When will you release?", now()->format('Y/m/d'));
+    }
+
+    protected function getAskArray(string $ask): array|null
+    {
+        $answers = [];
+        $continue = true;
+        do {
+            $answer = $this->ask($ask, null);
+            if (!is_null($answer)) {
+                $answers[] = $answer;
+            } else {
+                $continue = false;
+                break;
+            }
+            if (!$this->confirm("Do you have anything else?")) $continue = false;
+        } while ($continue);
+        return count($answers) ? $answers : null;
+    }
+
+    protected function getAuthors(): array|null
+    {
+        if (in_array("author", config("versioning.except"))) return null;
+        return $this->getAskArray("What's author name?");
+    }
+
+    protected function getUrl(): array|null
+    {
+        if (in_array("url", config("versioning.except"))) return null;
+        return $this->getAskArray("What's links for release notes?");
+    }
+
+    protected function getDescriptions(): array|null
+    {
+        if (in_array("description", config("versioning.except"))) return null;
+        return $this->getAskArray("What's description of changes, etc.? ");
+    }
+
+    protected function getNewFeatures(): array|null
+    {
+        if (in_array("newFeatures", config("versioning.except"))) return null;
+        return $this->getAskArray("What's description of new features?");
+    }
+
+    protected function getChangedFeatures(): array|null
+    {
+        if (in_array("changedFeatures", config("versioning.except"))) return null;
+        return $this->getAskArray("What's description of changed features?");
+    }
+
+    protected function getDeletedFeatures(): array|null
+    {
+        if (in_array("deletedFeatures", config("versioning.except"))) return null;
+        return $this->getAskArray("What's description of deleted features?");
+    }
+
+    protected function getNotice(): array|null
+    {
+        if (in_array("notice", config("versioning.except"))) return null;
+        return $this->getAskArray("What's notices and important information for users?");
+    }
+
+    protected function getSecurity(): array|null
+    {
+        if (in_array("security", config("versioning.except"))) return null;
+        return $this->getAskArray("What's security-related information for users?");
+    }
+
+    protected function getFuture(): array|null
+    {
+        if (in_array("futurePlans", config("versioning.except"))) return null;
+        return $this->getAskArray("What's future plans and changes?");
+    }
+
+    protected function getNote(): array|null
+    {
+        if (in_array("note", config("versioning.except"))) return null;
+        return $this->getAskArray("What's notes?");
     }
 }

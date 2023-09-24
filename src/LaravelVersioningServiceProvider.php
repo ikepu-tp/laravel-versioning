@@ -2,6 +2,8 @@
 
 namespace ikepu_tp\LaravelVersioning;
 
+use ikepu_tp\LaravelVersioning\app\Console\Commands\InstallCommand;
+use ikepu_tp\LaravelVersioning\app\Console\Commands\MakeCommand;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelVersioningServiceProvider extends ServiceProvider
@@ -11,7 +13,7 @@ class LaravelVersioningServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/config/laravel-versioning.php', 'laravel-versioning');
+        $this->mergeConfigFrom(__DIR__ . '/config/versioning.php', 'versioning');
     }
 
     /**
@@ -19,9 +21,14 @@ class LaravelVersioningServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerPublishing();
         $this->defineRoutes();
         $this->loadViewsFrom(__DIR__ . "/resources/views", "LaravelVersioning");
+        if (!$this->app->runningInConsole()) return;
+        $this->registerPublishing();
+        $this->commands([
+            InstallCommand::class,
+            MakeCommand::class,
+        ]);
     }
 
     /**
@@ -29,14 +36,13 @@ class LaravelVersioningServiceProvider extends ServiceProvider
      */
     private function registerPublishing()
     {
-        if (!$this->app->runningInConsole()) return;
 
         $this->publishView();
 
         return;
 
         $this->publishes([
-            __DIR__ . '/config/laravel-versioning.php' => base_path('config/laravel-versioning.php'),
+            __DIR__ . '/config/versioning.php' => base_path('config/versioning.php'),
         ], 'LaravelVersioning-config');
     }
 
