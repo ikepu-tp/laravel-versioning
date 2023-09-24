@@ -58,13 +58,13 @@ class MakeCommand extends Command
             "Author" => $this->getAuthors(),
             "url" => $this->getUrl(),
             "description" => $this->getDescriptions(),
-            "newFeatures" => "",
-            "changedFeatures" => "",
-            "deletedFeatures" => "",
-            "notice" => "",
-            "security" => "",
-            "futurePlans" => "",
-            "note" => "",
+            "newFeatures" => $this->getNewFeatures(),
+            "changedFeatures" => $this->getChangedFeatures(),
+            "deletedFeatures" => $this->getDeletedFeatures(),
+            "notice" => $this->getNotice(),
+            "security" => $this->getSecurity(),
+            "futurePlans" => $this->getFuture(),
+            "note" => $this->getNote(),
         ];
 
         return $newVersion;
@@ -145,5 +145,40 @@ class MakeCommand extends Command
     protected function getDescriptions(): array|null
     {
         return $this->getAskArray("What's description of changes, etc.? ");
+    }
+
+    protected function getNewFeatures(): array|null
+    {
+        return $this->getAskArray("What's description of new features?");
+    }
+
+    protected function getChangedFeatures(): array|null
+    {
+        return $this->getAskArray("What's description of changed features?");
+    }
+
+    protected function getDeletedFeatures(): array|null
+    {
+        return $this->getAskArray("What's description of deleted features?");
+    }
+
+    protected function getNotice(): array|null
+    {
+        return $this->getAskArray("What's notices and important information for users?");
+    }
+
+    protected function getSecurity(): array|null
+    {
+        return $this->getAskArray("What's security-related information for users?");
+    }
+
+    protected function getFuture(): array|null
+    {
+        return $this->getAskArray("What's future plans and changes?");
+    }
+
+    protected function getNote(): array|null
+    {
+        return $this->getAskArray("What's notes?");
     }
 }
