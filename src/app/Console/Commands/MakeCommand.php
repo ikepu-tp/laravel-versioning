@@ -33,7 +33,10 @@ class MakeCommand extends Command
     public function handle()
     {
         $versions = $this->getVersions();
-        $versions[] = $this->generateReleaseNote();
+        $version = $this->generateReleaseNote();
+        dump($version);
+        if (!$this->confirm("Is this OK?", true)) return;
+        $versions[] = $version;
         $this->saveVersions($versions);
         $this->info("Generated release note.");
         return;
