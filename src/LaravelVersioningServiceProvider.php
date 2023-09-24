@@ -13,7 +13,7 @@ class LaravelVersioningServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/config/versioning.php', 'laravel-versioning');
+        $this->mergeConfigFrom(__DIR__ . '/config/versioning.php', 'versioning');
     }
 
     /**

@@ -3,8 +3,19 @@
 return [
     /**
      * ----------------------------------------------------------------
-     *
+     * Except keys
      * ----------------------------------------------------------------
      */
-    "key" => "value"
+    "except" => [
+        //"author",
+        //"url",
+        //"description",
+        //"newFeatures",
+        //"changedFeatures",
+        //"deletedFeatures",
+        //"notice",
+        //"security",
+        //"futurePlans",
+        //"note",
+    ]
 ];
