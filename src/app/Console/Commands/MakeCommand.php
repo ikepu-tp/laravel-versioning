@@ -126,7 +126,12 @@ class MakeCommand extends Command
         $continue = true;
         do {
             $answer = $this->ask($ask, null);
-            if (!is_null($answer)) $answers[] = $answer;
+            if (!is_null($answer)) {
+                $answers[] = $answer;
+            } else {
+                $continue = false;
+                break;
+            }
             if (!$this->confirm("Do you have anything else?")) $continue = false;
         } while ($continue);
         return count($answers) ? $answers : null;
