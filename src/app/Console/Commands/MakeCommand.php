@@ -139,51 +139,61 @@ class MakeCommand extends Command
 
     protected function getAuthors(): array|null
     {
+        if (in_array("author", config("versioning.except"))) return null;
         return $this->getAskArray("What's author name?");
     }
 
     protected function getUrl(): array|null
     {
+        if (in_array("url", config("versioning.except"))) return null;
         return $this->getAskArray("What's links for release notes?");
     }
 
     protected function getDescriptions(): array|null
     {
+        if (in_array("description", config("versioning.except"))) return null;
         return $this->getAskArray("What's description of changes, etc.? ");
     }
 
     protected function getNewFeatures(): array|null
     {
+        if (in_array("newFeatures", config("versioning.except"))) return null;
         return $this->getAskArray("What's description of new features?");
     }
 
     protected function getChangedFeatures(): array|null
     {
+        if (in_array("changedFeatures", config("versioning.except"))) return null;
         return $this->getAskArray("What's description of changed features?");
     }
 
     protected function getDeletedFeatures(): array|null
     {
+        if (in_array("deletedFeatures", config("versioning.except"))) return null;
         return $this->getAskArray("What's description of deleted features?");
     }
 
     protected function getNotice(): array|null
     {
+        if (in_array("notice", config("versioning.except"))) return null;
         return $this->getAskArray("What's notices and important information for users?");
     }
 
     protected function getSecurity(): array|null
     {
+        if (in_array("security", config("versioning.except"))) return null;
         return $this->getAskArray("What's security-related information for users?");
     }
 
     protected function getFuture(): array|null
     {
+        if (in_array("futurePlans", config("versioning.except"))) return null;
         return $this->getAskArray("What's future plans and changes?");
     }
 
     protected function getNote(): array|null
     {
+        if (in_array("note", config("versioning.except"))) return null;
         return $this->getAskArray("What's notes?");
     }
 }
