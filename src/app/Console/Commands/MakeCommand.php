@@ -32,7 +32,19 @@ class MakeCommand extends Command
      */
     public function handle()
     {
-        dump($this->getVersions(), $this->generateReleaseNote());
+        $versions = $this->getVersions();
+        $versions[] = $this->generateReleaseNote();
+        $this->saveVersions($versions);
+        $this->info("Generated release note.");
+        return;
+    }
+
+    protected function saveVersions(array $versions): void
+    {
+        file_put_contents(
+            base_path('version.json'),
+            json_encode($versions, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
+        );
     }
 
     protected function getVersions()
