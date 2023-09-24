@@ -26,6 +26,8 @@ class InstallCommand extends Command
     public function handle()
     {
         $this->info("Creating files");
+        if (!file_exists(base_path(".github"))) mkdir(base_path(".github"));
+        if (!file_exists(base_path(".github/workflows"))) mkdir(base_path(".github/workflows"));
         foreach ([".github/workflows/release.yml", 'version.json'] as $val) {
             $this->copyFile(self::basePath() . "/{$val}", base_path($val));
         }
@@ -33,13 +35,14 @@ class InstallCommand extends Command
 
     protected function copyFile(string $path, string $target, bool $check_exists = true): void
     {
-        if ($check_exists && file_exists($target)) return;
+        if ($check_exists && file_exists($target))
+            if (!$this->confirm("{$path} exists. Do you want to overwrite?")) return;
         copy($path, $target);
         $this->info($path . " is copied to" . $target);
     }
 
     protected static function basePath(): string
     {
-        return __DIR__ . "/../../../";
+        return __DIR__ . "/../../..";
     }
 }
