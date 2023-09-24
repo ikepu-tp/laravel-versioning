@@ -25,6 +25,13 @@ php artisan versioning:install
 php artisan versioning:make
 ```
 
+| Option                 | Description                                           |
+| ---------------------- | ----------------------------------------------------- |
+| --VT / --version_type= | Specify the version type (`major`, `minor`, `patch`). |
+| --J  / --major         | Perform a major version upgrade.                      |
+| --M  / --minor         | Perform a minor version upgrade.                      |
+| --P  / --patch         | Perform a patch version upgrade.                      |
+
 #### Descriptions
 
 When creating release notes, the following information will be recorded using an interactive command:
