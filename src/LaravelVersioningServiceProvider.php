@@ -2,6 +2,7 @@
 
 namespace ikepu_tp\LaravelVersioning;
 
+use ikepu_tp\LaravelVersioning\app\Console\Commands\DeployCommand;
 use ikepu_tp\LaravelVersioning\app\Console\Commands\InstallCommand;
 use ikepu_tp\LaravelVersioning\app\Console\Commands\MakeCommand;
 use Illuminate\Support\ServiceProvider;
@@ -28,6 +29,7 @@ class LaravelVersioningServiceProvider extends ServiceProvider
         $this->commands([
             InstallCommand::class,
             MakeCommand::class,
+            DeployCommand::class,
         ]);
     }
 

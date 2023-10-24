@@ -12,5 +12,6 @@ class VersionController extends BaseController
      */
     public function index(Request $request)
     {
+        return response()->view("LaravelVersioning::version", []);
     }
 }
