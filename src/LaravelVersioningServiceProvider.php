@@ -40,9 +40,6 @@ class LaravelVersioningServiceProvider extends ServiceProvider
     {
 
         $this->publishView();
-
-        return;
-
         $this->publishes([
             __DIR__ . '/config/versioning.php' => base_path('config/versioning.php'),
         ], 'LaravelVersioning-config');
