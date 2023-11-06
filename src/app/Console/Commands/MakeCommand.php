@@ -3,6 +3,8 @@
 namespace ikepu_tp\LaravelVersioning\app\Console\Commands;
 
 use Error;
+use Exception;
+use ikepu_tp\LaravelVersioning\app\Services\VersionFileService;
 use Illuminate\Console\Command;
 
 class MakeCommand extends Command
@@ -44,25 +46,19 @@ class MakeCommand extends Command
 
     protected function saveVersions(array $versions): void
     {
-        file_put_contents(
-            base_path('version.json'),
-            json_encode($versions, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
-        );
+        VersionFileService::saveVersions($versions);
     }
 
     protected function getVersions()
     {
         if ($this->versions) return $this->versions;
 
-        $path = base_path("version.json");
-        if (!file_exists($path)) {
+        try {
+            $this->versions = VersionFileService::getVersions();
+            return $this->versions;
+        } catch (Exception $e) {
             $this->error("Could not find `version.json` file.");
-            return;
         }
-
-        $file = file_get_contents($path);
-        $this->versions = json_decode($file, true);
-        return $this->versions;
     }
 
     protected function generateReleaseNote()
