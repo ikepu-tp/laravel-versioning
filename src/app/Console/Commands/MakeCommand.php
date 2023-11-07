@@ -34,6 +34,7 @@ class MakeCommand extends Command
      */
     public function handle()
     {
+        if (!file_exists(base_path("versions"))) mkdir(base_path("versions"));
         $versions = $this->getVersions();
         $version = $this->generateReleaseNote();
         dump($version);
@@ -65,6 +66,7 @@ class MakeCommand extends Command
     {
         $newVersion = [
             "version" => $this->generateVersion($this->getVersionType()),
+            "path" => null,
             "releaseDate" => $this->getReleaseDate(),
             "createdDate" => now()->format('Y/m/d'),
             "Author" => $this->getAuthors(),

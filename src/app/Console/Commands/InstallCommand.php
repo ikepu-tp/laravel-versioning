@@ -28,6 +28,7 @@ class InstallCommand extends Command
         $this->info("Creating files");
         if (!file_exists(base_path(".github"))) mkdir(base_path(".github"));
         if (!file_exists(base_path(".github/workflows"))) mkdir(base_path(".github/workflows"));
+        if (!file_exists(base_path("versions"))) mkdir(base_path("versions"));
         foreach ([".github/workflows/release.yml", 'version.json'] as $val) {
             $this->copyFile(self::basePath() . "/{$val}", base_path($val));
         }
