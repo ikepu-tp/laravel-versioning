@@ -69,7 +69,7 @@ class MakeCommand extends Command
             "path" => null,
             "releaseDate" => $this->getReleaseDate(),
             "createdDate" => now()->format('Y/m/d'),
-            "Author" => $this->getAuthors(),
+            "authors" => $this->getAuthors(),
             "url" => $this->getUrl(),
             "description" => $this->getDescriptions(),
             "newFeatures" => $this->getNewFeatures(),
@@ -110,6 +110,8 @@ class MakeCommand extends Command
         switch ($version_type) {
             case 'major':
                 $splited_prev_version[0] = (int)$splited_prev_version[0] + 1;
+                $splited_prev_version[1] = 0;
+                $splited_prev_version[2] = 0;
                 break;
             case 'minor':
                 if ($splited_prev_version[1]) {
@@ -117,6 +119,7 @@ class MakeCommand extends Command
                 } else {
                     $splited_prev_version[1] = 1;
                 }
+                $splited_prev_version[2] = 0;
                 break;
             case 'patch':
                 if ($splited_prev_version[2]) {
@@ -134,7 +137,33 @@ class MakeCommand extends Command
         return $this->ask("When will you release?", now()->format('Y/m/d'));
     }
 
-    protected function getAskArray(string $ask): array|null
+    protected function getAskArray(string|array $ask): array|null
+    {
+        if (is_string($ask)) $answers = $this->getAskArrayByStr($ask);
+        if (is_array($ask)) $answers = $this->getAskArrayByAry($ask);
+        return count($answers) ? $answers : null;
+    }
+
+    protected function getAskArrayByAry(array $asks): array
+    {
+        $answers = [];
+        $continue = true;
+        do {
+            $answer = [];
+            foreach ($asks as $key => $ask) {
+                $res = $this->ask($ask, null);
+                if ($res) $answer[$key] = $res;
+            }
+            if (empty($answer)) {
+                $continue = false;
+                break;
+            }
+            $answers[] = $answer;
+            if (!$this->confirm("Do you have anything else?")) $continue = false;
+        } while ($continue);
+        return $answers;
+    }
+    protected function getAskArrayByStr(string $ask): array
     {
         $answers = [];
         $continue = true;
@@ -148,13 +177,17 @@ class MakeCommand extends Command
             }
             if (!$this->confirm("Do you have anything else?")) $continue = false;
         } while ($continue);
-        return count($answers) ? $answers : null;
+        return $answers;
     }
 
     protected function getAuthors(): array|null
     {
         if (in_array("author", config("versioning.except"))) return null;
-        return $this->getAskArray("What's author name?");
+        return $this->getAskArray([
+            "name" => "What's author name?",
+            "homepage" => "What's author homepage?",
+            "email" => "What's author email?",
+        ]);
     }
 
     protected function getUrl(): array|null

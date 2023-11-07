@@ -20,10 +20,39 @@
               <span>リリース日：{{ $version['releaseDate'] }}</span>
             </div>
             <div>
-              @include('LaravelVersioning::descriptions', [
-                  'title' => '寄与者',
-                  'items' => $version['Author'],
-              ])
+              @php
+                $authors = null;
+                if (isset($version['authors'])) {
+                    $authors = $version['authors'];
+                }
+                if (isset($version['Author'])) {
+                    $authors = $version['Author'];
+                }
+              @endphp
+              @if (is_array($authors))
+                <div>
+                  @include('LaravelVersioning::title', ['title' => '寄与者'])
+                  <ul>
+                    @foreach ($authors as $author)
+                      <li>
+                        @if (is_string($author))
+                          {{ $author }}
+                        @else
+                          @isset($author['name'])
+                            {{ $author['name'] }}
+                          @endisset
+                          @isset($author['homepage'])
+                            <a href="{{ $author['homepage'] }}" target="_blank" rel="noopener noreferrer">Link</a>
+                          @endisset
+                          @isset($author['email'])
+                            <a href="mailto:{{ $author['email'] }}" target="_blank" rel="noopener noreferrer">E-mail</a>
+                          @endisset
+                        @endif
+                      </li>
+                    @endforeach
+                  </ul>
+                </div>
+              @endif
               @if (is_array($version['url']))
                 <div>
                   @include('LaravelVersioning::title', ['title' => 'URL'])
