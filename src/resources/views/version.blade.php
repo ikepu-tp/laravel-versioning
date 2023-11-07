@@ -20,17 +20,13 @@
               <span>リリース日：{{ $version['releaseDate'] }}</span>
             </div>
             <div>
-              <div>
-                リリース寄与者
-                <ul>
-                  @foreach ($version['Author'] as $author)
-                    <li>{{ $author }}</li>
-                  @endforeach
-                </ul>
-              </div>
-              @if (!empty($version['url']))
+              @include('LaravelVersioning::descriptions', [
+                  'title' => '寄与者',
+                  'items' => $version['Author'],
+              ])
+              @if (is_array($version['url']))
                 <div>
-                  参考URL
+                  @include('LaravelVersioning::title', ['title' => 'URL'])
                   <ul>
                     @foreach ($version['url'] as $url)
                       <li>
@@ -42,22 +38,38 @@
               @endif
             </div>
             <div>
-              <h3>説明</h3>
-              {{ $version['description'] }}
-              <h3>新機能</h3>
-              {{ $version['newFeatures'] }}
-              <h3>変更機能</h3>
-              {{ $version['changedFeatures'] }}
-              <h3>削除機能</h3>
-              {{ $version['deletedFeatures'] }}
-              <h3>注意事項</h3>
-              {{ $version['notice'] }}
-              <h3>セキュリティ</h3>
-              {{ $version['security'] }}
-              <h3>今後の予定</h3>
-              {{ $version['futurePlans'] }}
-              <h3>お知らせ</h3>
-              {{ $version['note'] }}
+              @include('LaravelVersioning::descriptions', [
+                  'title' => '説明',
+                  'items' => $version['description'],
+              ])
+              @include('LaravelVersioning::descriptions', [
+                  'title' => '新機能',
+                  'items' => $version['newFeatures'],
+              ])
+              @include('LaravelVersioning::descriptions', [
+                  'title' => '変更機能',
+                  'items' => $version['changedFeatures'],
+              ])
+              @include('LaravelVersioning::descriptions', [
+                  'title' => '削除機能',
+                  'items' => $version['deletedFeatures'],
+              ])
+              @include('LaravelVersioning::descriptions', [
+                  'title' => '注意事項',
+                  'items' => $version['notice'],
+              ])
+              @include('LaravelVersioning::descriptions', [
+                  'title' => 'セキュリティ',
+                  'items' => $version['security'],
+              ])
+              @include('LaravelVersioning::descriptions', [
+                  'title' => '今後の予定',
+                  'items' => $version['futurePlans'],
+              ])
+              @include('LaravelVersioning::descriptions', [
+                  'title' => 'お知らせ',
+                  'items' => $version['note'],
+              ])
             </div>
           </div>
         </div>
