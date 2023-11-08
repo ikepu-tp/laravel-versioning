@@ -15,6 +15,12 @@ class VersionController extends BaseController
     {
         return response()->view("LaravelVersioning::version", [
             "versions" => VersionFileService::getVersions(),
+            "type" => "version-with-detail",
         ]);
+    }
+
+    public function show(Request $request, $version)
+    {
+        return response()->view("LaravelVersioning::version-show", []);
     }
 }
