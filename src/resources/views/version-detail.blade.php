@@ -16,8 +16,8 @@
     ],
 ])
 <div>
-  <span>作成日：{{ $version['createdDate'] }}</span>
-  <span>リリース日：{{ $version['releaseDate'] }}</span>
+  <span>{{ __('versioning::versioning.created at') }}: {{ $version['createdDate'] }}</span>
+  <span>{{ __('versioning::versioning.released at') }}: {{ $version['releaseDate'] }}</span>
 </div>
 <div>
   @php
@@ -31,7 +31,7 @@
   @endphp
   @if (!empty($authors))
     <div>
-      @include('LaravelVersioning::title', ['title' => '寄与者'])
+      @include('LaravelVersioning::title', ['title' => 'authors'])
       <ul>
         @foreach ($authors as $author)
           <li>
@@ -42,10 +42,14 @@
                 {{ $author['name'] }}
               @endisset
               @isset($author['homepage'])
-                <a href="{{ $author['homepage'] }}" target="_blank" rel="noopener noreferrer">Link</a>
+                <a href="{{ $author['homepage'] }}" target="_blank" rel="noopener noreferrer" class="ms-2">
+                  {{ __('versioning::versioning.homepage') }}
+                </a>
               @endisset
               @isset($author['email'])
-                <a href="mailto:{{ $author['email'] }}" target="_blank" rel="noopener noreferrer">E-mail</a>
+                <a href="mailto:{{ $author['email'] }}" target="_blank" rel="noopener noreferrer" class="ms-2">
+                  {{ __('versioning::versioning.email') }}
+                </a>
               @endisset
             @endif
           </li>
@@ -68,35 +72,35 @@
 </div>
 <div>
   @include('LaravelVersioning::descriptions', [
-      'title' => '説明',
+      'title' => 'description',
       'items' => $version['description'],
   ])
   @include('LaravelVersioning::descriptions', [
-      'title' => '新機能',
+      'title' => 'newFeatures',
       'items' => $version['newFeatures'],
   ])
   @include('LaravelVersioning::descriptions', [
-      'title' => '変更機能',
+      'title' => 'changedFeatures',
       'items' => $version['changedFeatures'],
   ])
   @include('LaravelVersioning::descriptions', [
-      'title' => '削除機能',
+      'title' => 'deletedFeatures',
       'items' => $version['deletedFeatures'],
   ])
   @include('LaravelVersioning::descriptions', [
-      'title' => '注意事項',
+      'title' => 'notice',
       'items' => $version['notice'],
   ])
   @include('LaravelVersioning::descriptions', [
-      'title' => 'セキュリティ',
+      'title' => 'security',
       'items' => $version['security'],
   ])
   @include('LaravelVersioning::descriptions', [
-      'title' => '今後の予定',
+      'title' => 'futurePlans',
       'items' => $version['futurePlans'],
   ])
   @include('LaravelVersioning::descriptions', [
-      'title' => 'お知らせ',
+      'title' => 'note',
       'items' => $version['note'],
   ])
 </div>

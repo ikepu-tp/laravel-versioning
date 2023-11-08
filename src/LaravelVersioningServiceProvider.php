@@ -23,6 +23,7 @@ class LaravelVersioningServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->defineRoutes();
+        $this->loadTranslationsFrom(__DIR__ . "/resources/lang", "versioning");
         $this->loadViewsFrom(__DIR__ . "/resources/views", "LaravelVersioning");
         if (!$this->app->runningInConsole()) return;
         $this->registerPublishing();
@@ -40,6 +41,7 @@ class LaravelVersioningServiceProvider extends ServiceProvider
     {
 
         $this->publishView();
+        $this->publishLang();
         $this->publishes([
             __DIR__ . '/config/versioning.php' => base_path('config/versioning.php'),
         ], 'LaravelVersioning-config');
@@ -50,6 +52,12 @@ class LaravelVersioningServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/resources/views' => resource_path('views/vendor/LaravelVersioning'),
         ], 'LaravelVersioning-views');
+    }
+    private function publishLang(): void
+    {
+        $this->publishes([
+            __DIR__ . '/resources/lang' => resource_path('lang/vendor/LaravelVersioning'),
+        ], 'LaravelVersioning-lang');
     }
 
     /**
