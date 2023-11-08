@@ -39,15 +39,22 @@ class MakeCommand extends Command
         $version = $this->generateReleaseNote();
         dump($version);
         if (!$this->confirm("Is this OK?", true)) return;
-        $versions[] = $version;
-        $this->saveVersions($versions);
+        VersionFileService::saveJson(
+            base_path($this->version_path("{$version['version']}.json")),
+            $version
+        );
+        $versions[] = [
+            "version" => $version["version"],
+            "path" => $this->version_path("{$version['version']}.json"),
+        ];
+        VersionFileService::saveVersions($versions);
         $this->info("Generated release note.");
         return;
     }
 
-    protected function saveVersions(array $versions): void
+    protected function version_path(string $path): string
     {
-        VersionFileService::saveVersions($versions);
+        return "versions/{$path}";
     }
 
     protected function getVersions()
@@ -66,7 +73,6 @@ class MakeCommand extends Command
     {
         $newVersion = [
             "version" => $this->generateVersion($this->getVersionType()),
-            "path" => null,
             "releaseDate" => $this->getReleaseDate(),
             "createdDate" => now()->format('Y/m/d'),
             "authors" => $this->getAuthors(),

@@ -26,7 +26,7 @@ class VersionFileService extends Service
 
     public static function saveJson(string $path, array $json): void
     {
-        if (file_exists($path)) throw new  Exception("Conflict `{$path}`");
+
         file_put_contents(
             $path,
             json_encode($json, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . PHP_EOL

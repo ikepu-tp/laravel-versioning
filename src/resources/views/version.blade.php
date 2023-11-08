@@ -5,6 +5,11 @@
 @section('content')
   <div class="accordion" id="versions">
     @foreach ($versions as $version)
+      @php
+        if (isset($version['path'])) {
+            $version = ikepu_tp\LaravelVersioning\app\Services\VersionFileService::getJson(base_path($version['path']));
+        }
+      @endphp
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -29,7 +34,7 @@
                     $authors = $version['Author'];
                 }
               @endphp
-              @if (is_array($authors))
+              @if (!empty($authors))
                 <div>
                   @include('LaravelVersioning::title', ['title' => '寄与者'])
                   <ul>
