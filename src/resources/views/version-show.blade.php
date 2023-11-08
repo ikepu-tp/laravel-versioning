@@ -17,5 +17,6 @@
 ])
 @extends('LaravelVersioning::layout')
 @section('content')
+  <h2>{{ $version['version'] }}</h2>
   @include('LaravelVersioning::version-detail', ['version' => $version])
 @endsection

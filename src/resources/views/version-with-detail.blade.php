@@ -13,7 +13,7 @@
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#v{{ $version['version'] }}-body" aria-expanded="false"
           aria-controls="v{{ $version['version'] }}-body">
-          v{{ $version['version'] }}
+          {{ $version['version'] }}
         </button>
       </h2>
       <div id="v{{ $version['version'] }}-body" class="accordion-collapse collapse" data-bs-parent="#versions">
