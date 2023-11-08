@@ -15,7 +15,10 @@ class VersionController extends BaseController
     {
         return response()->view("LaravelVersioning::version", [
             "versions" => VersionFileService::getVersions(),
-            "type" => "version-with-detail",
+            "type" => in_array(
+                config("versioning.list_view"),
+                ["version-list", "version-with-detail"]
+            ) ? config("versioning.list_view") : "version-list",
         ]);
     }
 
