@@ -4,6 +4,7 @@ namespace ikepu_tp\LaravelVersioning\app\Console\Commands;
 
 use Error;
 use Exception;
+use ikepu_tp\LaravelVersioning\app\Services\MakeFileService;
 use ikepu_tp\LaravelVersioning\app\Services\VersionFileService;
 use Illuminate\Console\Command;
 
@@ -34,60 +35,26 @@ class MakeCommand extends Command
      */
     public function handle()
     {
-        if (!file_exists(base_path("versions"))) mkdir(base_path("versions"));
-        $versions = $this->getVersions();
-        $version = $this->generateReleaseNote();
-        dump($version);
-        if (!$this->confirm("Is this OK?", true)) return;
-        VersionFileService::saveJson(
-            base_path($this->version_path("{$version['version']}.json")),
-            $version
+        $makeFileService = new MakeFileService;
+        $makeFileService->generateReleaseNote(
+            $this->generateVersion($this->getVersionType()),
+            $this->getReleaseDate(),
+            now()->format('Y/m/d'),
+            $this->getAuthors(),
+            $this->getUrl(),
+            $this->getDescriptions(),
+            $this->getNewFeatures(),
+            $this->getChangedFeatures(),
+            $this->getDeletedFeatures(),
+            $this->getNotice(),
+            $this->getSecurity(),
+            $this->getFuture(),
+            $this->getNote(),
         );
-        $versions[] = [
-            "version" => $version["version"],
-            "path" => $this->version_path("{$version['version']}.json"),
-        ];
-        VersionFileService::saveVersions($versions);
+        $makeFileService->generate();
+        dump($makeFileService->getNewVersion());
         $this->info("Generated release note.");
         return;
-    }
-
-    protected function version_path(string $path): string
-    {
-        return "versions/{$path}";
-    }
-
-    protected function getVersions()
-    {
-        if ($this->versions) return $this->versions;
-
-        try {
-            $this->versions = VersionFileService::getVersions();
-            return $this->versions;
-        } catch (Exception $e) {
-            $this->error("Could not find `version.json` file.");
-        }
-    }
-
-    protected function generateReleaseNote()
-    {
-        $newVersion = [
-            "version" => $this->generateVersion($this->getVersionType()),
-            "releaseDate" => $this->getReleaseDate(),
-            "createdDate" => now()->format('Y/m/d'),
-            "authors" => $this->getAuthors(),
-            "url" => $this->getUrl(),
-            "description" => $this->getDescriptions(),
-            "newFeatures" => $this->getNewFeatures(),
-            "changedFeatures" => $this->getChangedFeatures(),
-            "deletedFeatures" => $this->getDeletedFeatures(),
-            "notice" => $this->getNotice(),
-            "security" => $this->getSecurity(),
-            "futurePlans" => $this->getFuture(),
-            "note" => $this->getNote(),
-        ];
-
-        return $newVersion;
     }
 
     protected function getVersionType(): string|null
@@ -104,6 +71,14 @@ class MakeCommand extends Command
             }
         }
         return $version_type;
+    }
+
+    protected function getVersions()
+    {
+        if ($this->versions) return $this->versions;
+
+        $this->versions = VersionFileService::getVersions();
+        return $this->versions;
     }
 
     protected function generateVersion(string $version_type = null): string|false
