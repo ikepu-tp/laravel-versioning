@@ -6,14 +6,20 @@ return [
      * Web Route Middleware
      * ----------------------------------------------------------------
      */
-    "web_middleware" => ["web"],
+    "web_middleware" => [
+        "web",
+        \ikepu_tp\PackageName\app\Http\Middleware\VersioningEditorMiddleware::class,
+    ],
 
     /**
      * ----------------------------------------------------------------
      * API Route Middleware
      * ----------------------------------------------------------------
      */
-    "api_middleware" => ["api"],
+    "api_middleware" => [
+        "api",
+        \ikepu_tp\PackageName\app\Http\Middleware\VersioningEditorMiddleware::class,
+    ],
 
     /**
      * ----------------------------------------------------------------
