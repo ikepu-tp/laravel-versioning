@@ -8,7 +8,10 @@ return [
      */
     "web_middleware" => [
         "web",
-        \ikepu_tp\PackageName\app\Http\Middleware\VersioningEditorMiddleware::class,
+    ],
+    "editor_web_middleware" => [
+        "web",
+        \ikepu_tp\LaravelVersioning\app\Http\Middleware\VersioningEditorMiddleware::class,
     ],
 
     /**
@@ -18,7 +21,10 @@ return [
      */
     "api_middleware" => [
         "api",
-        \ikepu_tp\PackageName\app\Http\Middleware\VersioningEditorMiddleware::class,
+    ],
+    "editor_api_middleware" => [
+        "api",
+        \ikepu_tp\LaravelVersioning\app\Http\Middleware\VersioningEditorMiddleware::class,
     ],
 
     /**
@@ -47,4 +53,11 @@ return [
      */
     "list_view" => "version-list",
     //"list_view"=>"version-with-detail",
+
+    /**
+     * ----------------------------------------------------------------
+     * Prefix on Editor Pages
+     * ----------------------------------------------------------------
+     */
+    "editor_prefix" => "versioning",
 ];

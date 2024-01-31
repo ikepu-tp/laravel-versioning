@@ -1,6 +1,6 @@
 <?php
 
-namespace ikepu_tp\PackageName\app\Http\Middleware;
+namespace ikepu_tp\LaravelVersioning\app\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
