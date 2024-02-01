@@ -4,6 +4,7 @@ return [
     "created at" => "created at",
     "released at" => "released at",
     "authors" => "authors",
+    "author_name" => "name",
     "homepage" => "homepage",
     "email" => "email",
     "URL" => "Links",

@@ -4,6 +4,7 @@ return [
     "created at" => "作成日",
     "released at" => "リリース日",
     "authors" => "執筆者",
+    "author_name" => "名前",
     "homepage" => "ホームページ",
     "email" => "メール",
     "URL" => "リンク",

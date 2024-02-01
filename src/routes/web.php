@@ -14,7 +14,7 @@ Route::group([
     "middleware" => config("versioning.editor_web_middleware", []),
     "prefix" => config("versioning.editor_prefix", "versioning"),
 ], function () {
-    Route::resource("editor", EditorController::class);
+    Route::resource("editor", EditorController::class)->names("version.editor");
 });
 Route::group([
     "middleware" => config("versioning.api_middleware", [])
