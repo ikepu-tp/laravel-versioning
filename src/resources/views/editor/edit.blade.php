@@ -33,13 +33,14 @@
     @endif
     <h2>{{ $version['version'] ?: '新規追加' }}</h2>
     <a href="{{ route('version.editor.index') }}">戻る</a>
-    <div>
-      <span>{{ __('versioning::versioning.created at') }}:
-        <input type="date" name="createdDate" value="{{ $version['createdDate'] }}" required>
-      </span>
-      <span>{{ __('versioning::versioning.released at') }}:
-        <input type="date" name="releaseDate" value="{{ $version['releaseDate'] }}" required>
-      </span>
+    <div class="input-group my-2">
+      <div class="input-group-text">
+        {{ __('versioning::versioning.created at') }}:
+      </div>
+      <input type="date" name="createdDate" class="form-control" value="{{ $version['createdDate'] }}" required>
+      <div class="input-group-text">{{ __('versioning::versioning.released at') }}:
+      </div>
+      <input type="date" name="releaseDate" class="form-control" value="{{ $version['releaseDate'] }}" required>
     </div>
     <div>
       <div>
@@ -47,20 +48,26 @@
         @include('LaravelVersioning::editor.addButton', ['name' => 'authors'])
         <ul>
           @foreach ($version['authors'] as $key => $author)
-            <li>
-              <div>
-                {{ __('versioning::versioning.author_name') }}：<input type="text"
-                  name="authors[{{ $key }}][name]"
+            <li class="mb-2">
+              <div class="input-group">
+                <label class="input-group-text">
+                  {{ __('versioning::versioning.author_name') }}：
+                </label>
+                <input type="text" name="authors[{{ $key }}][name]" class="form-control"
                   value="{{ is_string($author) ? $author : (isset($author['name']) ? $author['name'] : '') }}">
               </div>
-              <div>
-                {{ __('versioning::versioning.homepage') }}：
-                <input type="text" name="authors[{{ $key }}][homepage]"
+              <div class="input-group">
+                <label class="input-group-text">
+                  {{ __('versioning::versioning.homepage') }}：
+                </label>
+                <input type="url" name="authors[{{ $key }}][homepage]" class="form-control"
                   value="{{ isset($author['homepage']) ? $author['homepage'] : '' }}">
               </div>
-              <div>
-                {{ __('versioning::versioning.email') }}：
-                <input type="email" name="authors[{{ $key }}][email]"
+              <div class="input-group">
+                <label class="input-group-text">
+                  {{ __('versioning::versioning.email') }}：
+                </label>
+                <input type="email" name="authors[{{ $key }}][email]" class="form-control"
                   value="{{ isset($author['email']) ? $author['email'] : '' }}">
               </div>
             </li>
@@ -73,7 +80,7 @@
         <ul>
           @foreach ($version['url'] as $url)
             <li>
-              <input type="url" name="url[]" value="{{ $url }}">
+              <input type="url" name="url[]" class="form-control" value="{{ $url }}">
             </li>
           @endforeach
         </ul>
@@ -121,6 +128,6 @@
           'name' => 'note',
       ])
     </div>
-    <button type="submit">登録</button>
+    <button type="submit" class="btn btn-primary">登録</button>
   </form>
 @endsection

@@ -7,8 +7,8 @@
 @include('LaravelVersioning::editor.addButton', ['name' => $name])
 <ul>
   @foreach ($items as $item)
-    <li>
-      <textarea name="{{ $name }}[]" style="width: 100%; height: auto;">{{ $item }}</textarea>
+    <li class="mb-2">
+      <textarea name="{{ $name }}[]" class="form-control" style="width: 100%; height: auto;">{{ $item }}</textarea>
     </li>
   @endforeach
 </ul>
