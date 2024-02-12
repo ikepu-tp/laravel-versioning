@@ -29,5 +29,12 @@
         </tr>
       @endforeach
     </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">
+          <a href="{{ route('version.index') }}">バージョン履歴</a>
+        </td>
+      </tr>
+    </tfoot>
   </table>
 @endsection
