@@ -31,7 +31,7 @@
     @else
       @method('PUT')
     @endif
-    <h2>{{ $version['version'] }}</h2>
+    <h2>{{ $version['version'] ?: '新規追加' }}</h2>
     <a href="{{ route('version.editor.index') }}">戻る</a>
     <div>
       <span>{{ __('versioning::versioning.created at') }}:

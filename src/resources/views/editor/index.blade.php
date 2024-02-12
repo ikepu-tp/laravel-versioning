@@ -32,8 +32,11 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="2">
+          <td>
             <a href="{{ route('version.index') }}">バージョン履歴</a>
+          </td>
+          <td>
+            <a href="{{ route('version.editor.create') }}" class="btn btn-success">新規追加</a>
           </td>
         </tr>
       </tfoot>
