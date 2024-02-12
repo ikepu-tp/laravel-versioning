@@ -31,23 +31,8 @@
     @else
       @method('PUT')
     @endif
-    <h2>{{ $version['version'] }}</h2>@props([
-        'version' => [
-            'version' => null,
-            'releaseDate' => null,
-            'createdDate' => null,
-            'authors' => null,
-            'url' => null,
-            'description' => null,
-            'newFeatures' => null,
-            'changedFeatures' => null,
-            'deletedFeatures' => null,
-            'notice' => null,
-            'security' => null,
-            'futurePlans' => null,
-            'note' => null,
-        ],
-    ])
+    <h2>{{ $version['version'] }}</h2>
+    <a href="{{ route('version.editor.index') }}">戻る</a>
     <div>
       <span>{{ __('versioning::versioning.created at') }}:
         <input type="date" name="createdDate" value="{{ $version['createdDate'] }}" required>

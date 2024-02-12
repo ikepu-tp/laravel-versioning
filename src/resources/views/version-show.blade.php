@@ -18,5 +18,6 @@
 @extends('LaravelVersioning::layout')
 @section('content')
   <h2>{{ $version['version'] }}</h2>
+  <a href="javascript:void()" onclick="history.back()">戻る</a>
   @include('LaravelVersioning::version-detail', ['version' => $version])
 @endsection
