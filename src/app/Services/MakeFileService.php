@@ -31,6 +31,16 @@ class MakeFileService extends Service
         return;
     }
 
+    public function update(): void
+    {
+        if (!$this->newVersion) throw new Exception("Undefined new version");
+        VersionFileService::saveJson(
+            base_path($this->version_path("{$this->newVersion['version']}.json")),
+            $this->newVersion
+        );
+        return;
+    }
+
     public function getNewVersion(): array
     {
         return $this->newVersion;

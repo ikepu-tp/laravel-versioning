@@ -43,7 +43,7 @@ class EditorController extends BaseController
             $request->input("version"),
             $request->input("releaseDate"),
             $request->input("createdDate"),
-            $request->input("atuhors"),
+            $request->input("authors"),
             $request->input("url"),
             $request->input("description"),
             $request->input("newFeatures"),
@@ -55,7 +55,7 @@ class EditorController extends BaseController
             $request->input("note"),
         );
         $makeFileService->generate();
-        return redirect(route("version.editor.edit", ["editor" => $request->input("version")]));
+        return redirect(route("version.editor.edit", ["editor" => $request->input("version")]))->with("add", $request->only(["add"]));
     }
 
     /**
@@ -120,6 +120,25 @@ class EditorController extends BaseController
         $json["futurePlans"] = $this->convertNullToArray($json["futurePlans"]);
         $json["note"] = $this->convertNullToArray($json["note"]);
 
+        // 入力欄追加
+        foreach ($request->session()->get("add", []) as $key => $value) {
+            if ($value === 0) continue;
+            if ($key === "authors") {
+                for ($i = 0; $i < $value; ++$i) {
+                    $json["authors"][] = [
+                        "name" => "",
+                        "homepage" => "",
+                        "email" => "",
+                    ];
+                }
+                continue;
+            }
+
+            for ($i = 0; $i < $value; ++$i) {
+                $json[$key][] = "";
+            }
+        }
+
         return response()->view("LaravelVersioning::editor.edit", [
             "version" => $json,
         ]);
@@ -133,10 +152,26 @@ class EditorController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $user_id)
+    public function update(Request $request, string $version)
     {
-        dd($request->input());
-        return back()->with("status", "変更しました");
+        $makeFileService = new MakeFileService;
+        $makeFileService->generateReleaseNote(
+            $version,
+            $request->input("releaseDate"),
+            $request->input("createdDate"),
+            $request->input("authors"),
+            $request->input("url"),
+            $request->input("description"),
+            $request->input("newFeatures"),
+            $request->input("changedFeatures"),
+            $request->input("deletedFeatures"),
+            $request->input("notice"),
+            $request->input("security"),
+            $request->input("future"),
+            $request->input("note"),
+        );
+        $makeFileService->update();
+        return back()->with("add", $request->input("add", []));
     }
 
     /**

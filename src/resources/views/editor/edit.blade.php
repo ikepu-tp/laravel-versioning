@@ -17,6 +17,11 @@
 ])
 @extends('LaravelVersioning::layout')
 @section('content')
+  @if (session('status'))
+    <div>
+      {{ session('status') }}
+    </div>
+  @endif
   <form
     action="{{ is_null($version['version']) ? route('version.editor.store') : route('version.editor.update', ['editor' => $version['version']]) }}"
     method="post">
@@ -56,20 +61,21 @@
         @include('LaravelVersioning::title', ['title' => 'authors'])
         @include('LaravelVersioning::editor.addButton', ['name' => 'authors'])
         <ul>
-          @foreach ($version['authors'] as $author)
+          @foreach ($version['authors'] as $key => $author)
             <li>
               <div>
-                {{ __('versioning::versioning.author_name') }}：<input type="text" name="authors[][name]"
+                {{ __('versioning::versioning.author_name') }}：<input type="text"
+                  name="authors[{{ $key }}][name]"
                   value="{{ is_string($author) ? $author : (isset($author['name']) ? $author['name'] : '') }}">
               </div>
               <div>
                 {{ __('versioning::versioning.homepage') }}：
-                <input type="text" name="authors[][homepage]"
+                <input type="text" name="authors[{{ $key }}][homepage]"
                   value="{{ isset($author['homepage']) ? $author['homepage'] : '' }}">
               </div>
               <div>
                 {{ __('versioning::versioning.email') }}：
-                <input type="email" name="authors[][email]"
+                <input type="email" name="authors[{{ $key }}][email]"
                   value="{{ isset($author['email']) ? $author['email'] : '' }}">
               </div>
             </li>
