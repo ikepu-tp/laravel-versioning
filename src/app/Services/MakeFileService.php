@@ -113,4 +113,54 @@ class MakeFileService extends Service
 
         return $this->newVersion;
     }
+
+    /**
+     * generate a new version
+     *
+     * @param "major"|"minor"|"patch" $version_type
+     * @param string|null $prev_version
+     * @return string
+     */
+    public function generateVersion(string $version_type, string $prev_version = null): string
+    {
+        if (!in_array($version_type, ["major", "minor", "patch"])) throw new Exception("Invalid version type");
+
+        if (is_null($prev_version)) {
+            if ($this->newVersion && isset($this->newVersion["version"])) {
+                $prev_version = $this->newVersion["version"];
+            }
+            if (empty($prev_version)) {
+                $versions = $this->getVersions();
+                $prev_version = count($versions) ? $versions[count($versions) - 1]["version"] :  "0.0.0";
+            }
+        }
+
+        $splited_prev_version = explode('.', preg_replace("/[^0-9\.]/", "", $prev_version));
+
+        switch ($version_type) {
+            case 'major':
+                $splited_prev_version[0] = (int)$splited_prev_version[0] + 1;
+                $splited_prev_version[1] = 0;
+                $splited_prev_version[2] = 0;
+                break;
+            case 'minor':
+                if ($splited_prev_version[1]) {
+                    $splited_prev_version[1] = (int)$splited_prev_version[1] + 1;
+                } else {
+                    $splited_prev_version[1] = 1;
+                }
+                $splited_prev_version[2] = 0;
+                break;
+            case 'patch':
+                if ($splited_prev_version[2]) {
+                    $splited_prev_version[2] = (int)$splited_prev_version[2] + 1;
+                } else {
+                    $splited_prev_version[2] = 1;
+                }
+                break;
+        }
+
+        $this->newVersion["version"] = implode(".", $splited_prev_version);
+        return $this->newVersion["version"];
+    }
 }

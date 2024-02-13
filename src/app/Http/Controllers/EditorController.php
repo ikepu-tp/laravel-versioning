@@ -40,7 +40,7 @@ class EditorController extends BaseController
     {
         $makeFileService = new MakeFileService;
         $makeFileService->generateReleaseNote(
-            $request->input("version"),
+            $request->input("version", ""),
             $request->input("releaseDate"),
             $request->input("createdDate"),
             $request->input("authors"),
@@ -54,8 +54,9 @@ class EditorController extends BaseController
             $request->input("future"),
             $request->input("note"),
         );
+        $makeFileService->generateVersion($request->input("version_type", "patch"));
         $makeFileService->generate();
-        return redirect(route("version.editor.edit", ["editor" => $request->input("version")]))->with("add", $request->only(["add"]));
+        return redirect(route("version.editor.edit", ["editor" => $makeFileService->getNewVersion()["version"]]))->with("add", $request->input("add", []));
     }
 
     /**

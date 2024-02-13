@@ -2,8 +2,6 @@
 
 namespace ikepu_tp\LaravelVersioning\app\Console\Commands;
 
-use Error;
-use Exception;
 use ikepu_tp\LaravelVersioning\app\Services\MakeFileService;
 use ikepu_tp\LaravelVersioning\app\Services\VersionFileService;
 use Illuminate\Console\Command;
@@ -37,7 +35,7 @@ class MakeCommand extends Command
     {
         $makeFileService = new MakeFileService;
         $makeFileService->generateReleaseNote(
-            $this->generateVersion($this->getVersionType()),
+            $makeFileService->generateVersion($this->getVersionType()),
             $this->getReleaseDate(),
             now()->format('Y/m/d'),
             $this->getAuthors(),
@@ -79,38 +77,6 @@ class MakeCommand extends Command
 
         $this->versions = VersionFileService::getVersions();
         return $this->versions;
-    }
-
-    protected function generateVersion(string $version_type = null): string|false
-    {
-        if (!in_array($version_type, ["major", "minor", "patch"]))
-            return $this->ask("What's next version?", "0.0.0");
-        $versions = $this->getVersions();
-        $prev_version = count($versions) ? $versions[count($versions) - 1] : ["version" => "0.0.0"];
-        $splited_prev_version = explode('.', preg_replace("/[^0-9\.]/", "", $prev_version["version"]));
-        switch ($version_type) {
-            case 'major':
-                $splited_prev_version[0] = (int)$splited_prev_version[0] + 1;
-                $splited_prev_version[1] = 0;
-                $splited_prev_version[2] = 0;
-                break;
-            case 'minor':
-                if ($splited_prev_version[1]) {
-                    $splited_prev_version[1] = (int)$splited_prev_version[1] + 1;
-                } else {
-                    $splited_prev_version[1] = 1;
-                }
-                $splited_prev_version[2] = 0;
-                break;
-            case 'patch':
-                if ($splited_prev_version[2]) {
-                    $splited_prev_version[2] = (int)$splited_prev_version[2] + 1;
-                } else {
-                    $splited_prev_version[2] = 1;
-                }
-                break;
-        }
-        return implode(".", $splited_prev_version);
     }
 
     protected function getReleaseDate(): string

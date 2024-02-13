@@ -1,8 +1,8 @@
 @props([
     'version' => [
         'version' => null,
-        'releaseDate' => null,
-        'createdDate' => null,
+        'releaseDate' => now()->format('Y-m-d'),
+        'createdDate' => now()->format('Y-m-d'),
         'authors' => [],
         'url' => [],
         'description' => [],
@@ -26,13 +26,21 @@
     action="{{ is_null($version['version']) ? route('version.editor.store') : route('version.editor.update', ['editor' => $version['version']]) }}"
     method="post">
     @csrf
+    <h2>{{ $version['version'] ?: '新規追加' }}</h2>
+    <a href="{{ route('version.editor.index') }}">戻る</a>
     @if (is_null($version['version']))
       @method('POST')
+      <div class="border rounded px-3 py-2 my-2">
+        <input type="radio" name="version_type" value="major" id="ver_major" class="form-check-input" checked>
+        <label class="form-check-label" for="ver_major">メジャー</label>
+        <input type="radio" name="version_type" value="minor" id="ver_minor" class="form-check-input">
+        <label class="form-check-label" for="ver_minor">マイナー</label>
+        <input type="radio" name="version_type" value="patch" id="ver_patch" class="form-check-input">
+        <label class="form-check-label" for="ver_patch">パッチ</label>
+      </div>
     @else
       @method('PUT')
     @endif
-    <h2>{{ $version['version'] ?: '新規追加' }}</h2>
-    <a href="{{ route('version.editor.index') }}">戻る</a>
     <div class="input-group my-2">
       <div class="input-group-text">
         {{ __('versioning::versioning.created at') }}:
