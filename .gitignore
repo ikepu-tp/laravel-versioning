@@ -1,1 +1,5 @@
 .DS_Store
+node_modules/
+vendor/
+src/resources/js/dist/
+.phpunit.result.cache
