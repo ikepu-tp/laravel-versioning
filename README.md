@@ -51,7 +51,6 @@ When creating release notes, the following information will be recorded using an
 | futurePlans     | N              | Plans for future changes (bulleted list).                        |
 | note            | N              | Additional notes.                                                |
 
-
 ### 4. **View Release Notes**
 
 [http://localhost/version](http://localhost/version)
