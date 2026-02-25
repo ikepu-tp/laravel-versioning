@@ -8,29 +8,27 @@ use DateTime;
 use Exception;
 use ikepu_tp\LaravelVersioning\app\Services\MakeFileService;
 use ikepu_tp\LaravelVersioning\app\Services\VersionFileService;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class EditorController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        return response()->view("LaravelVersioning::editor.index", [
+        return Inertia::render('LaravelVersioning/Editor/Index', [
             "versions" => VersionFileService::getVersions(),
-            "type" => in_array(
-                config("versioning.list_view"),
-                ["version-list", "version-with-detail"]
-            ) ? config("versioning.list_view") : "version-list",
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        return response()->view("LaravelVersioning::editor.edit");
+        return Inertia::render('LaravelVersioning/Editor/Edit');
     }
 
     /**
@@ -51,18 +49,18 @@ class EditorController extends BaseController
             $request->input("deletedFeatures"),
             $request->input("notice"),
             $request->input("security"),
-            $request->input("future"),
+            $request->input("futurePlans"),
             $request->input("note"),
         );
         $makeFileService->generateVersion($request->input("version_type", "patch"));
         $makeFileService->generate();
-        return redirect(route("version.editor.edit", ["editor" => $makeFileService->getNewVersion()["version"]]))->with("add", $request->input("add", []));
+        return redirect(route("version.editor.edit", ["editor" => $makeFileService->getNewVersion()["version"]]));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, $version)
+    public function show(Request $request, $version): Response
     {
         $json = null;
         try {
@@ -77,7 +75,7 @@ class EditorController extends BaseController
             }
         }
         if (is_null($json)) abort(404, "Not Found");
-        return response()->view("LaravelVersioning::version-show", [
+        return Inertia::render('LaravelVersioning/Version/Show', [
             "version" => $json,
         ]);
     }
@@ -85,7 +83,7 @@ class EditorController extends BaseController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, $version)
+    public function edit(Request $request, $version): Response
     {
         $json = null;
         try {
@@ -121,26 +119,7 @@ class EditorController extends BaseController
         $json["futurePlans"] = $this->convertNullToArray($json["futurePlans"]);
         $json["note"] = $this->convertNullToArray($json["note"]);
 
-        // 入力欄追加
-        foreach ($request->session()->get("add", []) as $key => $value) {
-            if ($value === 0) continue;
-            if ($key === "authors") {
-                for ($i = 0; $i < $value; ++$i) {
-                    $json["authors"][] = [
-                        "name" => "",
-                        "homepage" => "",
-                        "email" => "",
-                    ];
-                }
-                continue;
-            }
-
-            for ($i = 0; $i < $value; ++$i) {
-                $json[$key][] = "";
-            }
-        }
-
-        return response()->view("LaravelVersioning::editor.edit", [
+        return Inertia::render('LaravelVersioning/Editor/Edit', [
             "version" => $json,
         ]);
     }
@@ -168,11 +147,11 @@ class EditorController extends BaseController
             $request->input("deletedFeatures"),
             $request->input("notice"),
             $request->input("security"),
-            $request->input("future"),
+            $request->input("futurePlans"),
             $request->input("note"),
         );
         $makeFileService->update();
-        return back()->with("add", $request->input("add", []));
+        return back();
     }
 
     /**

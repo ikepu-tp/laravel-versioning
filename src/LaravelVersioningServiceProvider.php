@@ -52,6 +52,9 @@ class LaravelVersioningServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/resources/views' => resource_path('views/vendor/LaravelVersioning'),
         ], 'LaravelVersioning-views');
+        $this->publishes([
+            __DIR__ . '/resources/js/Pages' => resource_path('js/Pages/LaravelVersioning'),
+        ], 'LaravelVersioning-js');
     }
     private function publishLang(): void
     {

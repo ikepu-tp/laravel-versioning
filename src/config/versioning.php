@@ -60,4 +60,22 @@ return [
      * ----------------------------------------------------------------
      */
     "editor_prefix" => "versioning",
+
+    /**
+     * ----------------------------------------------------------------
+     * Editor Permission: User IDs
+     * ----------------------------------------------------------------
+     * Comma-separated list of user IDs allowed to access the editor.
+     * Example: VERSIONING_EDITOR_USER_IDS=1,2,3
+     */
+    "editor_user_ids" => env("VERSIONING_EDITOR_USER_IDS", ""),
+
+    /**
+     * ----------------------------------------------------------------
+     * Editor Permission: Emails
+     * ----------------------------------------------------------------
+     * Comma-separated list of emails allowed to access the editor.
+     * Example: VERSIONING_EDITOR_EMAILS=admin@example.com,editor@example.com
+     */
+    "editor_emails" => env("VERSIONING_EDITOR_EMAILS", ""),
 ];

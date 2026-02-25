@@ -6,24 +6,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as BaseController;
 use Exception;
 use ikepu_tp\LaravelVersioning\app\Services\VersionFileService;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class VersionController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        return response()->view("LaravelVersioning::version", [
+        return Inertia::render('LaravelVersioning/Version/Index', [
             "versions" => VersionFileService::getVersions(),
-            "type" => in_array(
-                config("versioning.list_view"),
-                ["version-list", "version-with-detail"]
-            ) ? config("versioning.list_view") : "version-list",
         ]);
     }
 
-    public function show(Request $request, $version)
+    public function show(Request $request, $version): Response
     {
         $json = null;
         try {
@@ -38,7 +36,7 @@ class VersionController extends BaseController
             }
         }
         if (is_null($json)) abort(404, "Not Found");
-        return response()->view("LaravelVersioning::version-show", [
+        return Inertia::render('LaravelVersioning/Version/Show', [
             "version" => $json,
         ]);
     }
